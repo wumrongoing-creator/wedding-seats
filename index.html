@@ -12,7 +12,6 @@
         padding: 0;
         overflow-y: auto !important;
         height: auto !important;
-        height: auto;
         min-height: 100%;
         box-sizing: border-box;
     }
@@ -248,6 +247,29 @@
 
     }
 
+    /* --- 新增：圖片燈箱 --- */
+    #lightboxOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#lightboxOverlay img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 10px;
+}
+
+#lightboxOverlay.hidden {
+    display: none;
+}
+
 </style>
 </head>
 <body>
@@ -294,7 +316,6 @@
     <!-- 新增功能按鈕區 -->
     <div class="button-area">
         <button class="btn secondary-btn" onclick="resetSearch()">↺ 重新輸入搜尋</button>
-        </button>
     </div>
 
 </div>
@@ -320,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     generateDots(0); 
 });
 
+/* --- 搜尋功能 --- */
 function search() {
     const name = document.getElementById("guestName").value.trim();
     const resultArea = document.getElementById("result-area");
@@ -337,7 +359,12 @@ function search() {
 
     setTimeout(() => { 
         if (!data) {
-            resultText.innerHTML = defaultResultHTML;
+            // 搜尋不到時顯示訊息
+            resultText.innerHTML = `
+                <span class="name-highlight">不好意思</span>，
+                此姓名沒有搜尋到對應結果，<br>
+                請確認當時登記的正確姓名再做搜尋，謝謝您。
+            `;
             tableLabel.innerHTML = ''; 
             clearDots();
             generateDots(0); 
@@ -355,7 +382,10 @@ function search() {
             window.location.hash = 'result-area';
         }
 
-        resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelector(".table-wrapper").scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+});
 
         if (window.parent && window.parent.postMessage) {
             setTimeout(() => {
@@ -364,6 +394,21 @@ function search() {
             }, 800); 
         }
     }, 100);
+}
+
+/* --- 重新搜尋功能 --- */
+function resetSearch() {
+    document.getElementById("guestName").value = "";
+    document.getElementById("resultText").innerHTML = defaultResultHTML;
+    document.getElementById("tableLabel").innerHTML = "";
+    document.getElementById("tableNoteBelow").style.display = "none";
+    clearDots();
+    generateDots(0);
+
+    document.querySelector(".greeting").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 }
 
 function clearDots() {
@@ -389,26 +434,33 @@ function generateDots(count) {
     }
 }
 
-/* --- 新增：重新搜尋功能 --- */
-function resetSearch() {
-    document.getElementById("guestName").value = "";
-    document.getElementById("resultText").innerHTML = defaultResultHTML;
-    document.getElementById("tableLabel").innerHTML = "";
-    document.getElementById("tableNoteBelow").style.display = "none";
-    clearDots();
-    generateDots(0);
-    document.querySelector(".greeting").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
+// ====== 點擊圖片放大 Lightbox ======
+document.querySelectorAll('.zoomable').forEach(img => {
+    img.style.cursor = "zoom-in";
+
+    img.addEventListener('click', () => {
+        let overlay = document.getElementById('lightboxOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'lightboxOverlay';
+            overlay.classList.add('hidden');
+            document.body.appendChild(overlay);
+        }
+        overlay.innerHTML = `<img src="${img.src}">`;
+        overlay.classList.remove('hidden');
+
+        overlay.addEventListener('click', () => {
+            overlay.classList.add('hidden');
+        });
     });
-}
+});
+    
 </script>
 
-<img src="images/table-map.png" alt="桌位圖" style="width:100%; max-width:800px; display:block; margin:40px auto;">
+<img src="images/table-map.png"
+     alt="桌位圖"
+     class="zoomable"
+     style="width:120%; max-width:1200px; display:block; margin:40px auto;">
 
 </body>
 </html>
-
-
-
-
