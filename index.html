@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -10,8 +11,6 @@
     html, body {
         margin: 0;
         padding: 0;
-        overflow-y: auto !important;
-        height: auto !important;
         height: auto;
         min-height: 100%;
         box-sizing: border-box;
@@ -30,7 +29,7 @@
         margin: 0 auto;
         padding: 0 15px;
     }
-
+    
     /* 貴賓您好！問候語 */
     .greeting {
         font-size: 20px;
@@ -54,7 +53,7 @@
         max-width: 400px;
         margin: 0 auto;
     }
-
+    
     /* 輸入框和按鈕的 Flex 容器 */
     .input-group {
         display: flex;
@@ -107,7 +106,7 @@
     .btn:hover {
         background-color: #b6763c;
     }
-
+    
     /* 註釋 */
     .note {
         font-size: 14px;
@@ -129,7 +128,7 @@
         padding-bottom: 20px;
         display: block; 
     }
-
+    
     /* 查詢結果卡片區塊 (名片) */
     #resultCard {
         width: 90%;
@@ -143,7 +142,7 @@
         opacity: 1; 
         transition: opacity .3s ease;
     }
-
+    
     /* 卡片內文字區塊 */
     #resultText {
         font-size: 16px;
@@ -247,17 +246,20 @@
         background-color: #c5ad8f;
     }
 
+
+    }
+
 </style>
 </head>
 <body>
 
 <div class="main-content-wrapper">
-    
+
     <p class="greeting">貴賓您好！</p>
     <h2>請提供賓客大名以查詢座位</h2>
-
+    
     <div class="form-note-container">
-
+        
         <div class="input-group">
             <div class="input-box">
                 <input id="guestName" placeholder="輸入姓名" />
@@ -270,13 +272,13 @@
         <p class="note">※ 請使用中文字、完整真實姓名查詢。</p>
         <p class="note">※ 外國賓客請使用半形英文全名查詢。</p>
     </div>
-
+    
     <hr />
 
     <div class="table-wrapper">
         <div id="tableLabel"></div> 
     </div>
-
+    
     <p id="tableNoteBelow" class="note-below-table">※ 座位請至現場自行分配 ※</p>
 
     <div id="result-area">
@@ -293,8 +295,7 @@
     <!-- 新增功能按鈕區 -->
     <div class="button-area">
         <button class="btn secondary-btn" onclick="resetSearch()">↺ 重新輸入搜尋</button>
-
-        </button>
+        
     </div>
 
 </div>
@@ -320,7 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
     generateDots(0); 
 });
 
-/* --- 搜尋功能 --- */
 function search() {
     const name = document.getElementById("guestName").value.trim();
     const resultArea = document.getElementById("result-area");
@@ -338,10 +338,9 @@ function search() {
 
     setTimeout(() => { 
         if (!data) {
-            // 搜尋不到時顯示訊息
+            // 搜尋不到時顯示的訊息
             resultText.innerHTML = `
-                <span class="name-highlight">不好意思</span>，
-                此姓名沒有搜尋到對應結果，<br>
+                <span class="name-highlight">不好意思</span>，此姓名沒有搜尋到對應結果，
                 請確認當時登記的正確姓名再做搜尋，謝謝您。
             `;
             tableLabel.innerHTML = ''; 
@@ -375,15 +374,37 @@ function search() {
     }, 100);
 }
 
-/* --- 重新搜尋功能 --- */
+function clearDots() {
+    document.querySelectorAll(".seat-dot").forEach(e => e.remove());
+}
+
+function generateDots(count) {
+    clearDots();
+    const wrapper = document.querySelector(".table-wrapper");
+    const radius = 120; 
+    const totalSeats = 10; 
+
+    for (let i = 0; i < totalSeats; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("seat-dot");
+        if (i < count) dot.classList.add("active");
+        const angle = (i / totalSeats) * (2 * Math.PI) - (Math.PI / 2); 
+        const x = 140 + Math.cos(angle) * radius; 
+        const y = 140 + Math.sin(angle) * radius;
+        dot.style.left = `${x - 15}px`; 
+        dot.style.top  = `${y - 15}px`;
+        wrapper.appendChild(dot);
+    }
+}
+
+/* --- 新增：重新搜尋功能 --- */
 function resetSearch() {
     document.getElementById("guestName").value = "";
-    document.getElementById("resultText").innerHTML = defaultResultHTML; // 回復初始範例文字
+    document.getElementById("resultText").innerHTML = defaultResultHTML;
     document.getElementById("tableLabel").innerHTML = "";
     document.getElementById("tableNoteBelow").style.display = "none";
     clearDots();
     generateDots(0);
-
     document.querySelector(".greeting").scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -398,14 +419,8 @@ function resetSearch() {
              style="width:100%; max-width:600px; display:block; margin:0 auto;">
     </div>
 
-
 </body>
 </html>
-
-
-
-
-
 
 
 
