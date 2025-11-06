@@ -244,35 +244,13 @@
     }
     .secondary-btn:hover {
         background-color: #c5ad8f;
-
-    }
-
-    /* --- 新增：圖片燈箱 --- */
-    #lightboxOverlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.75);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-#lightboxOverlay img {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 10px;
-}
-
-#lightboxOverlay.hidden {
-    display: none;
 }
 
 </style>
 </head>
 <body>
+
+    <img src="images/table-map.png" alt="桌位圖" style="width:100%; max-width:1200px; display:block; margin:40px auto;">
 
 <div class="main-content-wrapper">
 
@@ -432,33 +410,13 @@ function generateDots(count) {
         dot.style.top  = `${y - 15}px`;
         wrapper.appendChild(dot);
     }
-}
-
-// ====== 點擊圖片放大 Lightbox ======
-document.querySelectorAll('.zoomable').forEach(img => {
-    img.style.cursor = "zoom-in";
-
-    img.addEventListener('click', () => {
-        let overlay = document.getElementById('lightboxOverlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'lightboxOverlay';
-            overlay.classList.add('hidden');
-            document.body.appendChild(overlay);
-        }
-        overlay.innerHTML = `<img src="${img.src}">`;
-        overlay.classList.remove('hidden');
-
-        overlay.addEventListener('click', () => {
-            overlay.classList.add('hidden');
-        });
+    
     });
 });
     
 </script>
 
-<img src="images/table-map.png" alt="桌位圖" style="width:100%; max-width:1200px; display:block; margin:40px auto;">
-
 </body>
 </html>
+
 
